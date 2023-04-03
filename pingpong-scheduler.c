@@ -50,7 +50,7 @@ int main (int argc, char *argv[])
   task_join(&Pang);
   task_join(&Peng);
   task_join(&Ping);
-  task_join(&Ping);
+  task_join(&Pong);
   task_join(&Pung);
 
   printf ("main: fim\n");

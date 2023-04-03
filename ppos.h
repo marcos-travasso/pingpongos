@@ -102,6 +102,12 @@ void task_setprio (task_t *task, int prio) ;
 // retorna a prioridade estática de uma tarefa (ou a tarefa atual)
 int task_getprio (task_t *task) ;
 
+// define a prioridade dinâmica de uma tarefa (ou a tarefa atual) com base no aging, se for zero a prioridade volta a ser a estática
+void task_agedprio (task_t *task, int aging) ;
+
+// retorna a prioridade dinâmica de uma tarefa (ou a tarefa atual)
+int task_getdprio (task_t *task) ;
+
 // retorna a proxima tarefa a ser executada conforme a politica de escalonamento
 task_t * scheduler() ;
 

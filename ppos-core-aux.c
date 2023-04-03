@@ -6,6 +6,78 @@
 // Coloque aqui as suas modificações, p.ex. includes, defines variáveis, 
 // estruturas e funções
 
+int TASK_AGING = -1;
+
+int task_getprio (task_t *task) {
+    if(task == NULL) {
+        task = taskExec;
+    }
+    return task->staticPriority;
+}
+
+void task_setprio (task_t *task, int prio) {
+    if (prio < -20) {
+        prio = -20;
+    } else if (prio > 20) {
+        prio = 20;
+    }
+
+    if(task == NULL) {
+        task = taskExec;
+    }
+    task->staticPriority = prio;
+    task->dynamicPriority = prio;
+}
+
+int task_getdprio (task_t *task) {
+    if(task == NULL) {
+        task = taskExec;
+    }
+    return task->dynamicPriority;
+}
+
+void task_agedprio (task_t *task, int aging) {
+    if(task == NULL) {
+        task = taskExec;
+    }
+    if(aging == 0) {
+        task->dynamicPriority = task_getprio(task);
+    }
+
+    if (task->dynamicPriority + aging < -20) {
+        task->dynamicPriority = -20;
+        return;
+    } else if (task->dynamicPriority + aging > 20) {
+        task->dynamicPriority = 20;
+        return;
+    }
+
+    task->dynamicPriority += aging;
+}
+
+task_t * scheduler() {
+    if (readyQueue == NULL) {
+        return NULL;
+    }
+
+    task_t* prioTask = readyQueue;
+    task_t* it = readyQueue;
+
+    do {
+        if(task_getdprio(it) <= task_getdprio(prioTask) && it != prioTask) {
+            task_agedprio(prioTask, TASK_AGING);
+            prioTask = it;
+        } else if (it != prioTask) {
+            task_agedprio(it, TASK_AGING);
+        }
+
+        it = it->next;
+    } while(it != NULL && it->id != 0 && it != readyQueue);
+
+    task_agedprio(prioTask, 0);
+
+    return prioTask;
+}
 
 // ****************************************************************************
 
@@ -395,13 +467,3 @@ int after_mqueue_msgs (mqueue_t *queue) {
 #endif
     return 0;
 }
-
-task_t * scheduler() {
-    // FCFS scheduler
-    if ( readyQueue != NULL ) {
-        return readyQueue;
-    }
-    return NULL;
-}
-
-
