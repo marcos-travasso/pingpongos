@@ -20,7 +20,7 @@ void setTimer()
 {
     timer.it_value.tv_usec = 1000;    // primeiro disparo, em micro-segundos
     timer.it_interval.tv_usec = 1000; // disparos subsequentes, em micro-segundos
-    timer.it_value.tv_sec = 0;        // primeiro disparo, em micro-segundos
+    timer.it_value.tv_sec = 0;
     timer.it_interval.tv_sec = 0;
 
     if (setitimer(ITIMER_REAL, &timer, 0) < 0)
@@ -32,12 +32,23 @@ void setTimer()
 
 void sig_Handler(int sinal)
 {
+    task_t *queue;
     systemTime++;
     if (systemTime >= quantum)
     {
-        taskExec->awakeTime += systemTime;
-        task_yield(scheduler());
-        systemTime = 0;
+        taskExec->timeFromStart += systemTime;
+        if (taskExec->state == 'X')
+        {
+            taskExec->state = 'S';
+        }
+        task_t *nextTask = scheduler();
+        if (nextTask != NULL)
+        {
+            if (nextTask->state == 'S')
+                nextTask->state = 'X';
+            task_yield();
+            systemTime = 0;
+        }
     }
 }
 
@@ -136,7 +147,6 @@ task_t *scheduler()
         {
             task_agedprio(it, TASK_AGING);
         }
-
         it = it->next;
     } while (it != NULL && it->id != 0 && it != readyQueue);
 
@@ -202,6 +212,7 @@ void after_task_exit()
 void before_task_switch(task_t *task)
 {
     // put your customization here
+    task->state = 'X';
 #ifdef DEBUG
     printf("\ntask_switch - BEFORE - [%d -> %d]", taskExec->id, task->id);
 #endif
