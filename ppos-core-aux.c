@@ -32,6 +32,7 @@ void setTimer()
 
 void sig_Handler(int sinal)
 {
+    task_t *queue;
     systemTime++;
     taskExec->timeFromStart += systime();
 

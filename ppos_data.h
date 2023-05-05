@@ -27,7 +27,6 @@ typedef struct task_t
     // ... (outros campos deve ser adicionados APOS esse comentario)
 
     unsigned int timeFromStart;
-
     int staticPriority;
     int dynamicPriority;
 
