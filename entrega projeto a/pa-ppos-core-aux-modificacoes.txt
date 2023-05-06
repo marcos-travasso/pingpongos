@@ -1,10 +1,3 @@
-#include "ppos.h"
-#include "ppos-core-globals.h"
-
-// ****************************************************************************
-// Coloque aqui as suas modificações, p.ex. includes, defines variáveis,
-// estruturas e funções
-
 #include "sys/time.h"
 #include "signal.h"
 
@@ -133,8 +126,6 @@ void printContab(task_t *task) {
     printf("Task %d exit: execution time %d ms, processorTime %d ms, %d activations\n", task->id, systemTime - task->startTime, task->processorTime, task->activations);
 }
 
-// ****************************************************************************
-
 void before_ppos_init()
 {
     setTimer();
@@ -151,9 +142,6 @@ void before_task_exit() {
     printContab(taskExec);
 }
 
-void after_ppos_init() {
-}
-
 void before_task_switch(task_t *task)
 {
     task->state = 'X';
@@ -166,170 +154,4 @@ void before_task_switch(task_t *task)
 
 void before_task_yield() {
     taskExec->processorTime += (systime() - taskExec->lastActivation);
-}
-
-void after_task_create(task_t *task) {
-}
-
-void after_task_exit() {
-}
-
-void after_task_switch(task_t *task) {
-}
-
-void after_task_yield() {
-}
-
-void before_task_suspend(task_t *task) {
-}
-
-void after_task_suspend(task_t *task) {
-}
-
-void before_task_resume(task_t *task) {
-}
-
-void after_task_resume(task_t *task) {
-}
-
-void before_task_sleep() {
-}
-
-void after_task_sleep() {
-}
-
-int before_task_join(task_t *task) {
-    return 0;
-}
-
-int after_task_join(task_t *task) {
-    return 0;
-}
-
-int before_sem_create(semaphore_t *s, int value) {
-    return 0;
-}
-
-int after_sem_create(semaphore_t *s, int value) {
-    return 0;
-}
-
-int before_sem_down(semaphore_t *s) {
-    return 0;
-}
-
-int after_sem_down(semaphore_t *s) {
-    return 0;
-}
-
-int before_sem_up(semaphore_t *s) {
-    return 0;
-}
-
-int after_sem_up(semaphore_t *s) {
-    return 0;
-}
-
-int before_sem_destroy(semaphore_t *s) {
-    return 0;
-}
-
-int after_sem_destroy(semaphore_t *s) {
-    return 0;
-}
-
-int before_mutex_create(mutex_t *m) {
-    return 0;
-}
-
-int after_mutex_create(mutex_t *m) {
-    return 0;
-}
-
-int before_mutex_lock(mutex_t *m) {
-    return 0;
-}
-
-int after_mutex_lock(mutex_t *m) {
-    return 0;
-}
-
-int before_mutex_unlock(mutex_t *m) {
-    return 0;
-}
-
-int after_mutex_unlock(mutex_t *m) {
-    return 0;
-}
-
-int before_mutex_destroy(mutex_t *m) {
-    return 0;
-}
-
-int after_mutex_destroy(mutex_t *m) {
-    return 0;
-}
-
-int before_barrier_create(barrier_t *b, int N) {
-    return 0;
-}
-
-int after_barrier_create(barrier_t *b, int N) {
-    return 0;
-}
-
-int before_barrier_join(barrier_t *b) {
-    return 0;
-}
-
-int after_barrier_join(barrier_t *b) {
-    return 0;
-}
-
-int before_barrier_destroy(barrier_t *b) {
-    return 0;
-}
-
-int after_barrier_destroy(barrier_t *b) {
-    return 0;
-}
-
-int before_mqueue_create(mqueue_t *queue, int max, int size) {
-    return 0;
-}
-
-int after_mqueue_create(mqueue_t *queue, int max, int size) {
-    return 0;
-}
-
-int before_mqueue_send(mqueue_t *queue, void *msg) {
-    return 0;
-}
-
-int after_mqueue_send(mqueue_t *queue, void *msg) {
-    return 0;
-}
-
-int before_mqueue_recv(mqueue_t *queue, void *msg) {
-    return 0;
-}
-
-int after_mqueue_recv(mqueue_t *queue, void *msg) {
-    return 0;
-}
-
-int before_mqueue_destroy(mqueue_t *queue) {
-    return 0;
-}
-
-int after_mqueue_destroy(mqueue_t *queue) {
-    return 0;
-}
-
-int before_mqueue_msgs(mqueue_t *queue) {
-    return 0;
-}
-
-int after_mqueue_msgs(mqueue_t *queue) {
-    return 0;
 }
