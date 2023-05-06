@@ -1,4 +1,3 @@
-//#define DEBUG
 #include "ppos.h"
 #include "ppos-core-globals.h"
 
