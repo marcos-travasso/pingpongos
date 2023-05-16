@@ -10,8 +10,8 @@
 #include "ppos.h"
 #include "ppos_disk.h"
 
-int numblocks ;			// numero de blocos no disco
-int blocksize ;			// tamanho de cada bloco (bytes)
+int numblocks = 256;			// numero de blocos no disco
+int blocksize = 64;			// tamanho de cada bloco (bytes)
 
 int main (int argc, char *argv[])
 {
@@ -51,8 +51,11 @@ int main (int argc, char *argv[])
 
     // mostra o conteudo do buffer
     printf ("%5d ms: buffer: [", systime()) ;
-    for (j = 0; j < blocksize; j++)
-      printf ("%c", buffer[j]) ;
+    for (j = 0; j < blocksize; j++){
+        if(buffer[j] > 31){
+            printf("%c", buffer[j]);
+        }
+    }
     printf ("]\n") ;
   }
 
@@ -65,8 +68,10 @@ int main (int argc, char *argv[])
 
     // preenche o buffer com um caractere aleatório
     c = 32 + random () % 48 ;
-    for (j = 0; j < blocksize; j++)
+    for (j = 0; j < blocksize - 1; j++)
       buffer[j] = c ;
+
+    buffer[j] = '\n';
 
     // escreve o buffer no bloco i do disco
     printf ("%5d ms: escrevendo bloco %d com caracteres \"%c\"\n",

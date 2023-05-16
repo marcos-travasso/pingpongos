@@ -141,6 +141,7 @@ static void disk_sighandle (int sig)
   disk.status = DISK_STATUS_IDLE ;
 
   // gerar um sinal SIGUSR1 para o "kernel" do usuario
+  printf("DISK: sinal enviado\n");
   raise (SIGUSR1) ;
 }
 
@@ -243,12 +244,18 @@ int disk_cmd (int cmd, int block, void *buffer)
     // solicita operação de leitura ou de escrita
     case DISK_CMD_READ:
     case DISK_CMD_WRITE:
-      if (disk.status != DISK_STATUS_IDLE)
+      if (disk.status != DISK_STATUS_IDLE){
+        printf("DISK: erro de idle\n");
         return -1 ;
-      if ( !buffer )
+      }
+      if ( !buffer ){
+        printf("DISK: erro de buffere\n");
         return -1 ;
-      if ( block < 0 || block >= disk.numblocks)
+      }
+      if ( block < 0 || block >= disk.numblocks){
+        printf("DISK: erro de blocos\n");
         return -1 ;
+      }
 
       // registra que ha uma operacao pendente
       disk.buffer = buffer ;
