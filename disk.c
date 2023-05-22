@@ -243,18 +243,12 @@ int disk_cmd (int cmd, int block, void *buffer)
     // solicita operação de leitura ou de escrita
     case DISK_CMD_READ:
     case DISK_CMD_WRITE:
-      if (disk.status != DISK_STATUS_IDLE){
-        printf("DISK: erro de idle\n");
+      if (disk.status != DISK_STATUS_IDLE)
         return -1 ;
-      }
-      if ( !buffer ){
-        printf("DISK: erro de buffere\n");
+      if ( !buffer )
         return -1 ;
-      }
-      if ( block < 0 || block >= disk.numblocks){
-        printf("DISK: erro de blocos\n");
+      if ( block < 0 || block >= disk.numblocks)
         return -1 ;
-      }
 
       // registra que ha uma operacao pendente
       disk.buffer = buffer ;

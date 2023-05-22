@@ -33,28 +33,28 @@ void moverBody (void * arg)
   block_orig = myNumber * blocksPerTask ;
   block_dest = numblocks - 1 - (myNumber * blocksPerTask) ;
 
-  printf ("%5d T%02d movendo %2d blocos entre bloco %3d e bloco %3d\n",
-          systime(), task_id(), blocksPerTask, block_orig, block_dest) ;
+  printf ("T%02d movendo %2d blocos entre bloco %3d e bloco %3d\n",
+          task_id(), blocksPerTask, block_orig, block_dest) ;
 
   // move blocksPerTask blocos
   for (i = 0 ; i < blocksPerTask; i++)
   {
     // le o bloco b1 do disco
-    printf ("%5d T%02d vai ler bloco %3d\n", systime(), task_id(), block_orig) ;
+    printf ("T%02d vai ler bloco %3d\n", task_id(), block_orig) ;
     if (disk_block_read (block_orig, buffer1) == 0)
-      printf ("%5d T%02d leu bloco %3d\n", systime(), task_id(), block_orig) ;
+      printf ("T%02d leu bloco %3d\n", task_id(), block_orig) ;
     else
-      printf ("%5d T%02d erro ao ler bloco %3d\n", systime(), task_id(), block_orig) ;
+      printf ("T%02d erro ao ler bloco %3d\n", task_id(), block_orig) ;
 
     // le o bloco b2 do disco
-    printf ("%5d T%02d vai ler bloco %3d\n", systime(), task_id(), block_dest) ;
+    printf ("T%02d vai ler bloco %3d\n", task_id(), block_dest) ;
     if (disk_block_read (block_dest, buffer2) == 0)
-      printf ("%5d T%02d leu bloco %3d\n", systime(), task_id(), block_dest) ;
+      printf ("T%02d leu bloco %3d\n", task_id(), block_dest) ;
     else
-      printf ("%5d T%02d erro ao ler bloco %3d\n", systime(), task_id(), block_dest) ;
+      printf ("T%02d erro ao ler bloco %3d\n", task_id(), block_dest) ;
 
     // mostra o conteudo do bloco b1
-    printf ("%5d T%02d bloco %3d tem: [", systime(), task_id(), block_orig) ;
+    printf ("T%02d bloco %3d tem: [", task_id(), block_orig) ;
     for (j = 0; j < blocksize; j++){
         if(buffer1[j] > 31){
             printf("%c", buffer1[j]);
@@ -63,7 +63,7 @@ void moverBody (void * arg)
     printf ("]\n") ;
 
     // mostra o conteudo do bloco b2
-    printf ("%5d T%02d bloco %3d tem: [", systime(), task_id(), block_dest) ;
+    printf ("T%02d bloco %3d tem: [", task_id(), block_dest) ;
     for (j = 0; j < blocksize; j++){
         if(buffer2[j] > 31){
             printf("%c", buffer2[j]);
@@ -72,24 +72,24 @@ void moverBody (void * arg)
     printf ("]\n") ;
 
     // escreve o bloco b1 no disco
-    printf ("%5d T%02d vai escrever bloco %3d\n", systime(), task_id(), block_dest) ;
+    printf ("T%02d vai escrever bloco %3d\n", task_id(), block_dest) ;
     if (disk_block_write (block_dest, buffer1) == 0)
-      printf ("%5d T%02d escreveu bloco %3d\n", systime(), task_id(), block_dest) ;
+      printf ("T%02d escreveu bloco %3d\n", task_id(), block_dest) ;
     else
-      printf ("%5d T%02d erro ao escrever bloco %3d\n", systime(), task_id(), block_dest) ;
+      printf ("T%02d erro ao escrever bloco %3d\n", task_id(), block_dest) ;
 
     // escreve o bloco b2 no disco
-    printf ("%5d T%02d vai escrever bloco %3d\n", systime(), task_id(), block_orig) ;
+    printf ("T%02d vai escrever bloco %3d\n", task_id(), block_orig) ;
     if (disk_block_write (block_orig, buffer2) == 0)
-      printf ("%5d T%02d escreveu bloco %3d\n", systime(), task_id(), block_orig) ;
+      printf ("T%02d escreveu bloco %3d\n", task_id(), block_orig) ;
     else
-      printf ("%5d T%02d erro ao escrever bloco %3d\n", systime(), task_id(), block_orig) ;
+      printf ("T%02d erro ao escrever bloco %3d\n", task_id(), block_orig) ;
 
     // define os proximos blocos
     block_orig++ ;
     block_dest-- ;
   }
-  printf ("%5d T%02d terminou\n", systime(), task_id()) ;
+  printf ("T%02d terminou\n", task_id()) ;
   free (buffer1) ;
   free (buffer2) ;
   task_exit (0) ;
@@ -99,7 +99,7 @@ int main (int argc, char *argv[])
 {
   long i ;
 
-  printf ("%5d main: inicio\n", systime()) ;
+  printf ("main: inicio\n") ;
 
   // inicializa o sistema operacional
   ppos_init () ;
@@ -110,7 +110,7 @@ int main (int argc, char *argv[])
     printf ("Erro na abertura do disco\n") ;
     exit (1) ;
   }
-  printf ("%5d Disco contem %d blocos de %d bytes cada\n", systime(), numblocks, blocksize) ;
+  printf ("Disco contem %d blocos de %d bytes cada\n", numblocks, blocksize) ;
 
   // cria as tarefas
   for (i = 0; i < NUMTASKS; i++)
@@ -121,7 +121,7 @@ int main (int argc, char *argv[])
    task_join (&mover[i]) ;
 
   // encerra a thread main
-  printf ("%5d main: fim\n", systime()) ;
+  printf ("main: fim\n") ;
   task_exit (0) ;
 
   exit(0) ;
