@@ -141,7 +141,6 @@ static void disk_sighandle (int sig)
   disk.status = DISK_STATUS_IDLE ;
 
   // gerar um sinal SIGUSR1 para o "kernel" do usuario
-  printf("DISK: sinal enviado\n");
   raise (SIGUSR1) ;
 }
 

@@ -55,14 +55,20 @@ void moverBody (void * arg)
 
     // mostra o conteudo do bloco b1
     printf ("%5d T%02d bloco %3d tem: [", systime(), task_id(), block_orig) ;
-    for (j = 0; j < blocksize; j++)
-      printf ("%c", buffer1[j]) ;
+    for (j = 0; j < blocksize; j++){
+        if(buffer1[j] > 31){
+            printf("%c", buffer1[j]);
+        }
+    }
     printf ("]\n") ;
 
     // mostra o conteudo do bloco b2
     printf ("%5d T%02d bloco %3d tem: [", systime(), task_id(), block_dest) ;
-    for (j = 0; j < blocksize; j++)
-      printf ("%c", buffer2[j]) ;
+    for (j = 0; j < blocksize; j++){
+        if(buffer2[j] > 31){
+            printf("%c", buffer2[j]);
+        }
+    }
     printf ("]\n") ;
 
     // escreve o bloco b1 no disco
