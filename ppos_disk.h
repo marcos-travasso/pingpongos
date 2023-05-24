@@ -11,11 +11,24 @@
 // a um dispositivo de entrada/saida orientado a blocos,
 // tipicamente um disco rigido.
 
+#include "ppos.h"
+
+typedef struct waiting_task_t {
+    task_t* task;
+    int command;
+    int block;
+    void *buffer;
+    struct waiting_task_t* next;
+} waiting_task_t;
+
 // estrutura que representa um disco no sistema operacional
-typedef struct
-{
-  // completar com os campos necessarios
-} disk_t ;
+typedef struct {
+    mutex_t mtx;
+    waiting_task_t* waitingTasks;
+    waiting_task_t* processingTask;
+    task_t scheduler;
+} disk_t;
+
 
 // inicializacao do gerente de disco
 // retorna -1 em erro ou 0 em sucesso
