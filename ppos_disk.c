@@ -9,8 +9,11 @@ struct sigaction usrsig;
 disk_t* disk;
 
 void add_waiting_task(waiting_task_t* task) {
+    mutex_lock(&disk->queueMtx);
+
     if(disk->waitingTasks == NULL) {
         disk->waitingTasks = task;
+        mutex_unlock(&disk->queueMtx);
         return;
     }
 
@@ -20,6 +23,7 @@ void add_waiting_task(waiting_task_t* task) {
     }
 
     lt->next = task;
+    mutex_unlock(&disk->queueMtx);
 }
 
 waiting_task_t* pop_waiting_task(){
@@ -44,11 +48,11 @@ waiting_task_t* create_waiting_task(task_t* task, int command, int block, void *
 }
 
 int disk_execute_command(waiting_task_t* wt){
-    mutex_lock(&disk->mtx);
+    mutex_lock(&disk->diskAccessMtx);
 
     disk->processingTask = wt;
     if(disk_cmd(wt->command, wt->block, wt->buffer) < 0) {
-        perror ("Erro escrevendo disco");
+        printf ("T%d - Erro escrevendo disco\n", task_id());
         exit (1);
     }
 
@@ -58,7 +62,7 @@ int disk_execute_command(waiting_task_t* wt){
 
     while(disk_cmd(DISK_CMD_STATUS, 0, 0) != DISK_STATUS_IDLE){}
 
-    mutex_unlock(&disk->mtx);
+    mutex_unlock(&disk->diskAccessMtx);
 
     return 0;
 }
@@ -92,8 +96,13 @@ int disk_mgr_init (int *numBlocks, int *blockSize) {
         exit (1);
     }
 
-    if (mutex_create(&disk->mtx)) {
-        perror ("Erro criando mutex");
+    if (mutex_create(&disk->diskAccessMtx)) {
+        perror ("Erro criando mutex de acesso ao disco");
+        exit (1);
+    }
+
+    if (mutex_create(&disk->queueMtx)) {
+        perror ("Erro criando mutex de fila");
         exit (1);
     }
 
@@ -124,8 +133,8 @@ int disk_block_write (int block, void *buffer) {
     waiting_task_t* wt = create_waiting_task(taskExec, DISK_CMD_WRITE, block, buffer);
 
     add_waiting_task(wt);
-    wt->task->state = PPOS_TASK_STATE_SUSPENDED;
 
+    wt->task->state = PPOS_TASK_STATE_SUSPENDED;
     task_suspend(wt->task, &sleepQueue);
     task_yield();
 

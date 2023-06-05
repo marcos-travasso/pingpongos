@@ -23,7 +23,8 @@ typedef struct waiting_task_t {
 
 // estrutura que representa um disco no sistema operacional
 typedef struct {
-    mutex_t mtx;
+    mutex_t diskAccessMtx;
+    mutex_t queueMtx;
     waiting_task_t* waitingTasks;
     waiting_task_t* processingTask;
     task_t scheduler;
