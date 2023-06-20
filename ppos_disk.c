@@ -155,19 +155,18 @@ void disk_scheduler_CSCAN(void *arg)
 void disk_scheduler_SSTF(void *arg)
 {
     int currentblock = 0;
-    int diskSize = disk_cmd(DISK_CMD_DISKSIZE, 0, NULL);
     int blocks_traveled = 0;
+    int distance = 0;
+    int shortest_distance = 99999999;
 
     while (sleepQueue != NULL || readyQueue != NULL)
     {
         waiting_task_t *selected_task = NULL;
-        int shortest_distance = 99999999;
 
         waiting_task_t *task = disk->waitingTasks;
 
         while (task != NULL)
         {
-            int distance;
 
             if (task->block >= currentblock)
                 distance = task->block - currentblock;
