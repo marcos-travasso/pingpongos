@@ -142,7 +142,7 @@ void disk_scheduler_CSCAN(void *arg)
             }
             else
             {
-                distance = diskSize - currentblock + task->block;
+                distance = currentblock - task->block;
             }
             blocks_traveled += distance;
             currentblock = task->block;
