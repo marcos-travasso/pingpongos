@@ -246,7 +246,7 @@ int disk_mgr_init(int *numBlocks, int *blockSize)
     }
 
     //altere o scheduler para disk_scheduler_FCFS, disk_scheduler_SSTF ou disk_scheduler_CSCAN
-    task_create(&disk->scheduler, disk_scheduler_CSCAN, "");
+    task_create(&disk->scheduler, disk_scheduler_FCFS, "");
     return 0;
 }
 
