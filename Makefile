@@ -5,10 +5,10 @@ sche: ppos-core-aux.o libppos_static.a pingpong-scheduler.o
 			gcc ppos-core-aux.c libppos_static.a pingpong-scheduler.c -o sche
 
 disco1: ppos-core-aux.o libppos_static.a ppos_disk.o pingpong-disco1.o disk.o
-			gcc ppos-core-aux.c libppos_static.a ppos_disk.c pingpong-disco1.c disk.c -lrt
+			gcc ppos-core-aux.c libppos_static.a ppos_disk.c pingpong-disco1.c disk.c -lrt -o disco1
 
 disco2: ppos-core-aux.o libppos_static.a ppos_disk.o pingpong-disco2.o disk.o
-			gcc ppos-core-aux.c libppos_static.a ppos_disk.c pingpong-disco2.c disk.c -lrt
+			gcc ppos-core-aux.c libppos_static.a ppos_disk.c pingpong-disco2.c disk.c -lrt -o disco2
 
 ppos-core-aux.o: ppos-core-aux.c
 			gcc -c ppos-core-aux.c

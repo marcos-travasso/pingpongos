@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <time.h>
 // Se der algum problema de que a leitura dos blocos parece estar indo para o lado, troque o separador de linhas do disk.dat para LF
 struct sigaction usrsig;
 disk_t *disk;
@@ -87,6 +88,9 @@ void disk_scheduler_FCFS(void *arg)
 {
     int blocks_traveled = 0;
     int currentblock = 0;
+
+    clock_t start_time = clock();
+
     while (sleepQueue != NULL || readyQueue != NULL)
     {
         waiting_task_t *task = pop_waiting_task();
@@ -107,32 +111,34 @@ void disk_scheduler_FCFS(void *arg)
             task_yield();
         }
     }
-    printf("Total de blocos percorridos: %d\n", blocks_traveled);
+
+    clock_t end_time = clock();
+
+    printf("Total de blocos percorridos: %d\nTempo decorrido: %.f \n", blocks_traveled, (double)((end_time - start_time) / 10000));
 }
 
 void disk_scheduler_CSCAN(void *arg)
 {
     int currentblock = 0;
     int diskSize = disk_cmd(DISK_CMD_DISKSIZE, 0, NULL);
-    int direction = 1;
     int blocks_traveled = 0;
+    int distance = 0;
+
+    clock_t start_time = clock();
 
     while (sleepQueue != NULL || readyQueue != NULL)
     {
-        if (currentblock == (diskSize - 1) && direction == 1)
+        if (currentblock == (diskSize - 1))
         {
             currentblock = 0;
-            blocks_traveled += diskSize - 1;
-            disk_cmd(DISK_CMD_READ, 0, NULL);
-            direction = -1;
         }
         waiting_task_t *task = pop_waiting_task();
         if (task != NULL)
         {
-            int distance;
             if (task->block >= currentblock)
             {
                 distance = task->block - currentblock;
+                task_resume(task->task);
             }
             else
             {
@@ -140,7 +146,7 @@ void disk_scheduler_CSCAN(void *arg)
             }
             blocks_traveled += distance;
             currentblock = task->block;
-            task_resume(task->task);
+            task = task->next;
         }
         else
         {
@@ -149,7 +155,8 @@ void disk_scheduler_CSCAN(void *arg)
             task_yield();
         }
     }
-    printf("Total de blocos percorridos: %d\n", blocks_traveled);
+    clock_t end_time = clock();
+    printf("Total de blocos percorridos: %d \nTempo decorrido: %.f \n", blocks_traveled, (double)((end_time - start_time) / 10000));
 }
 
 void disk_scheduler_SSTF(void *arg)
@@ -157,10 +164,12 @@ void disk_scheduler_SSTF(void *arg)
     int currentblock = 0;
     int blocks_traveled = 0;
     int distance = 0;
-    int shortest_distance = 99999999;
+
+    clock_t start_time = clock();
 
     while (sleepQueue != NULL || readyQueue != NULL)
     {
+        int shortest_distance = 99999999;
         waiting_task_t *selected_task = NULL;
 
         waiting_task_t *task = disk->waitingTasks;
@@ -199,7 +208,9 @@ void disk_scheduler_SSTF(void *arg)
             task_yield();
         }
     }
-    printf("Total de blocos percorridos: %d\n", blocks_traveled);
+    clock_t end_time = clock();
+
+    printf("Total de blocos percorridos: %d\nTempo decorrido: %.f \n", blocks_traveled, (double)((end_time - start_time) / 10000));
 }
 
 int disk_mgr_init(int *numBlocks, int *blockSize)
